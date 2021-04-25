@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view()),
     path('news/', NewsView.as_view()),
-    path('news/<slug:article_id>/', ArticleView.as_view())
+    path('news/<int:article_id>/', ArticleView.as_view())
 ]
