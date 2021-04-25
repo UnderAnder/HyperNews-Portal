@@ -1,12 +1,14 @@
+{% extends "base.html" %}
 {% load lookup %}
-<h2>Hyper news</h2>
-{% for date in news %}
-    <h4>{{ date }}</h4>
-    <ul>
-        {% for article in news|lookup:date %}
-        <li><a href="/news/{{ article.link }}/">{{ article.title }}</a></li>
-        {% endfor %}
-    </ul>
-{% endfor %}
-<a target="_blank" href="/news/create/">Create</a>
-
+{% block content %}
+    <h2>Hyper news</h2>
+    {% for date in news %}
+        <h4>{{ date }}</h4>
+        <ul>
+            {% for article in news|lookup:date %}
+            <li><a href="/news/{{ article.link }}/">{{ article.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    <a target="_blank" href="/news/create/">Create</a>
+{% endblock content %}
