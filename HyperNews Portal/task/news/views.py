@@ -1,15 +1,16 @@
-import json
-from random import randrange
-from datetime import datetime
 from collections import defaultdict
+from datetime import datetime
+from json import load
+from random import randrange
+
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import View
-from django.http.response import HttpResponseNotFound
 from hypernews import settings
 
 
 with open(settings.NEWS_JSON_PATH, 'r') as json_file:
-    data = json.load(json_file)
+    data = load(json_file)
 group_by_date = defaultdict(list)
 for i in data:
     group_by_date[i['created'].split()[0]].append(i)
@@ -22,8 +23,6 @@ class HomeView(View):
 
 class ArticleView(View):
     def get(self, request, article_id, *args, **kwargs):
-        with open(settings.NEWS_JSON_PATH, 'r') as json_file:
-            data = json.load(json_file)
         article = list(filter(lambda x: x['link'] == article_id, data))
         if not article:
             return HttpResponseNotFound('<h1>Page not found</h1>')
@@ -32,8 +31,7 @@ class ArticleView(View):
 
 class NewsView(View):
     def get(self, request, *args, **kwargs):
-        search = request.GET.get('q')
-        if search:
+        if search := request.GET.get('q'):
             filtered = defaultdict(list)
             for k in group_by_date.keys():
                 for v in group_by_date[k]:
