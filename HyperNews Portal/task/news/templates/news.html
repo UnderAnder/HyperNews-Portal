@@ -2,6 +2,11 @@
 {% load lookup %}
 {% block content %}
     <h2>Hyper news</h2>
+    <form action="/news/" method="get">{% csrf_token %}
+        <label for="q">Search:</label>
+        <input type="text" name="q" id="q">
+        <button type="submit">search</button>
+    </form>
     {% for date in news %}
         <h4>{{ date }}</h4>
         <ul>

@@ -4,7 +4,7 @@ from datetime import datetime
 from collections import defaultdict
 from django.shortcuts import render, redirect
 from django.views import View
-from django.http.response import HttpResponse, HttpResponseNotFound
+from django.http.response import HttpResponseNotFound
 from hypernews import settings
 
 
@@ -17,7 +17,7 @@ for i in data:
 
 class HomeView(View):
     def get(self, request, *args, **kwargs):
-        return HttpResponse('Coming soon')
+        return redirect('/news')
 
 
 class ArticleView(View):
@@ -32,8 +32,16 @@ class ArticleView(View):
 
 class NewsView(View):
     def get(self, request, *args, **kwargs):
-
-        news = dict(sorted(group_by_date.items(), reverse=True))
+        search = request.GET.get('q')
+        if search:
+            filtered = defaultdict(list)
+            for k in group_by_date.keys():
+                for v in group_by_date[k]:
+                    if search.lower() in v['title'].lower():
+                        filtered[k].append(v)
+            news = dict(sorted(filtered.items(), reverse=True))
+        else:
+            news = dict(sorted(group_by_date.items(), reverse=True))
         return render(request, 'news.html', context={'news': news})
 
 
